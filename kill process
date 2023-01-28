@@ -1,0 +1,7 @@
+To kill a process that is using port 8080 in Windows, you can use the command line tool "netstat" to find the process ID (PID) of the process that is using the port, and then use the "taskkill" command to terminate the process.
+
+Open the Command Prompt.
+Type the command "netstat -ano | findstr :8080" and press Enter. This will display a list of active connections and the PIDs of the processes that are using port 8080.
+Locate the PID of the process that you want to terminate and note it down.
+Type the command "taskkill /PID <PID> /F" and press Enter. Replace <PID> with the PID of the process that you noted in step 3. This will forcefully terminate the process.
+Alternatively, You can also use the command "netstat -a -b" to see which process is using the port and then use Task manager to end the process.
