@@ -1,0 +1,8 @@
+public class OktaUserProcessor implements ItemProcessor<User, User> {
+
+  @Override
+  public User process(User user) throws Exception {
+    // Perform any necessary processing on the user object, such as transforming or filtering the data
+    return user;
+  }
+}
