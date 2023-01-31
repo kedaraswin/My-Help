@@ -1,0 +1,21 @@
+public class OktaApiClient {
+
+  private final RestTemplate restTemplate;
+  private final String apiUrl;
+  private final String apiKey;
+
+  public OktaApiClient(RestTemplate restTemplate, String apiUrl, String apiKey) {
+    this.restTemplate = restTemplate;
+    this.apiUrl = apiUrl;
+    this.apiKey = apiKey;
+  }
+
+  public List<User> getUsers() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "SSWS " + apiKey);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+    ResponseEntity<User[]> response = restTemplate.exchange(apiUrl + "/users", HttpMethod.GET, entity, User[].class);
+    return Arrays.asList(response.getBody());
+  }
+}
