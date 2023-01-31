@@ -1,0 +1,18 @@
+public class OktaUserReader implements ItemReader<User> {
+
+  private final OktaApiClient oktaApiClient;
+  private Iterator<User> userIterator;
+
+  public OktaUserReader(OktaApiClient oktaApiClient) {
+    this.oktaApiClient = oktaApiClient;
+  }
+
+  @Override
+  public User read() throws Exception {
+    if (userIterator == null || !userIterator.hasNext()) {
+      List<User> users = oktaApiClient.getUsers();
+      userIterator = users.iterator();
+    }
+    return userIterator.hasNext() ? userIterator.next() : null;
+  }
+}
