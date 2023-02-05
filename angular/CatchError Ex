@@ -1,0 +1,38 @@
+Let's say you have a service that retrieves a list of products from an API. If the API call fails, you want to show an error message to the user instead of the product list.
+
+import { Component, OnInit } from '@angular/core';
+import { of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { ProductService } from './product.service';
+
+@Component({
+  selector: 'app-product-list',
+  template: `
+    <div *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="!errorMessage">
+      <ul>
+        <li *ngFor="let product of products">{{ product.name }}</li>
+      </ul>
+    </div>
+  `
+})
+export class ProductListComponent implements OnInit {
+  products = [];
+  errorMessage = '';
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.productService.getProducts()
+      .pipe(
+        catchError(error => {
+          this.errorMessage = error.message;
+          return of([]);
+        }),
+        map(products => products.filter(product => product.price > 100))
+      )
+      .subscribe(products => this.products = products);
+  }
+}
