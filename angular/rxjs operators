@@ -24,3 +24,24 @@ Utility Operators
 delay - used to delay the emission of values from an Observable stream.
 debounceTime - used to delay the emission of values from an Observable stream, only emitting the latest value after a specified period of time.
 distinctUntilChanged - used to only emit values that are distinct and different from the previous value in the stream.
+
+---------------------Important---------------------------------
+map - used to transform the data in an Observable stream, for example, converting a stream of strings to a stream of their lengths.
+
+filter - used to filter data in an Observable stream, for example, only emitting values that meet a certain condition.
+
+mergeMap (also known as flatMap) - used to flatten multiple Observables into a single stream, emitting values from all inner streams in a non-deterministic order.
+
+switchMap - used to switch to a new Observable stream whenever a new value is emitted by the source Observable.
+
+concatMap - used to concatenate multiple Observables into a single stream, emitting values from one inner stream at a time.
+
+debounceTime - used to delay the emission of values from an Observable stream, only emitting the latest value after a specified period of time.
+
+distinctUntilChanged - used to only emit values that are distinct and different from the previous value in the stream.
+
+take - used to limit the number of emissions from an Observable stream.
+
+catchError - used to handle errors that occur in an Observable stream, for example, retrying the operation that caused the error.
+
+of - used to create an Observable from a set of values, emitting each value one after the other.
