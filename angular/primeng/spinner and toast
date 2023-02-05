@@ -1,0 +1,30 @@
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+
+@Component({
+  selector: 'app-spinner-toast',
+  templateUrl: './spinner-toast.component.html',
+  styleUrls: ['./spinner-toast.component.css']
+})
+export class SpinnerToastComponent implements OnInit {
+  loading = false;
+
+  constructor(private http: HttpClient, private messageService: MessageService) {}
+
+  ngOnInit() {}
+
+  onClick() {
+    this.loading = true;
+    this.http.get('https://api.example.com/data').subscribe(
+      data => {
+        this.loading = false;
+        this.messageService.add({ severity: 'success', summary: 'Data Loaded', detail: 'Data loaded successfully' });
+      },
+      error => {
+        this.loading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while loading the data' });
+      }
+    );
+  }
+}
