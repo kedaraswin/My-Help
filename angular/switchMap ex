@@ -1,0 +1,84 @@
+
+Let's say you have an e-commerce website where users can search for products. When a user types in a search query, you want to fetch the results from the API and display them to the user. However, if the user types in a new search query before the previous one has finished, you want to cancel the previous API request and make a new request with the latest search query.
+import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ProductService } from './product.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <input type="text" (input)="search$.next($event.target.value)" placeholder="Search products">
+    <div *ngFor="let product of products">
+      {{ product.name }}
+    </div>
+  `
+})
+export class AppComponent implements OnInit {
+  search$ = new Subject<string>();
+  products = [];
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.search$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(searchTerm => this.productService.searchProducts(searchTerm))
+      )
+      .subscribe(products => {
+        this.products = products;
+      });
+  }
+}
+
+
+--------------------Explanation-------------
+2 / 2
+
+Here's a business use case example for the switchMap operator in RxJS.
+
+Let's say you have an e-commerce website where users can search for products. When a user types in a search query, you want to fetch the results from the API and display them to the user. However, if the user types in a new search query before the previous one has finished, you want to cancel the previous API request and make a new request with the latest search query.
+
+Here's how you could implement this behavior with the switchMap operator:
+
+typescript
+Copy code
+import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ProductService } from './product.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <input type="text" (input)="search$.next($event.target.value)" placeholder="Search products">
+    <div *ngFor="let product of products">
+      {{ product.name }}
+    </div>
+  `
+})
+export class AppComponent implements OnInit {
+  search$ = new Subject<string>();
+  products = [];
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.search$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(searchTerm => this.productService.searchProducts(searchTerm))
+      )
+      .subscribe(products => {
+        this.products = products;
+      });
+  }
+}
+In this example, a Subject named search$ is used to capture the search query from the input field. The search$ subject is then piped through a number of operators:
+
+debounceTime: This operator delays emitting values for a specified amount of time. In this case, it delays emitting values for 300 milliseconds to prevent making API requests for every keystroke.
+distinctUntilChanged: This operator only emits values if they are different from the previous value. This is useful to avoid making API requests for the same search query.
+switchMap: This operator maps the values from the search$ subject to API requests made with the ProductService. It also cancels any previous API requests that haven't completed when a new value is emitted from the search$ subject.
