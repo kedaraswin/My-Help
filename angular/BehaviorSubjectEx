@@ -1,0 +1,77 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OrdersService {
+  private ordersSubject = new BehaviorSubject<any[]>([]);
+
+  orders$ = this.ordersSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  fetchOrders() {
+    this.http.get<any[]>('/api/orders').pipe(
+      tap(orders => this.ordersSubject.next(orders))
+    ).subscribe();
+  }
+
+  addOrder(order) {
+    this.http.post<any>('/api/orders', order).pipe(
+      map(newOrder => [...this.ordersSubject.getValue(), newOrder]),
+      tap(orders => this.ordersSubject.next(orders))
+    ).subscribe();
+  }
+}
+
+// In component A
+import { OrdersService } from './orders.service';
+
+@Component({
+  selector: 'app-component-a',
+  template: `
+    <form (submit)="addOrder(order)">
+      <input type="text" [(ngModel)]="order.item" name="item">
+      <input type="number" [(ngModel)]="order.quantity" name="quantity">
+      <button type="submit">Add Order</button>
+    </form>
+  `
+})
+export class ComponentA {
+  order = { item: '', quantity: 0 };
+
+  constructor(private ordersService: OrdersService) {}
+
+  addOrder(order) {
+    this.ordersService.addOrder(order);
+  }
+}
+
+// In component B
+import { OrdersService } from './orders.service';
+
+@Component({
+  selector: 'app-component-b',
+  template: `
+    <table>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.item }}</td>
+        <td>{{ order.quantity }}</td>
+      </tr>
+    </table>
+  `
+})
+export class ComponentB {
+  orders: any[];
+
+  constructor(private ordersService: OrdersService) {
+    this.ordersService.orders$.subscribe(orders => {
+      this.orders = orders;
+    });
+
+    this.ordersService.fetchOrders();
+  }
+}
