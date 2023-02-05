@@ -1,0 +1,69 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HttpService {
+  private httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
+  constructor(private http: HttpClient) { }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error); // log the error to the console
+
+      // Show error toast here
+
+      return of(result as T);
+    };
+  }
+
+  get<T>(url: string): Observable<T> {
+    // Show spinner here
+
+    return this.http.get<T>(url, this.httpOptions).pipe(
+      tap(() => {
+        // Hide spinner here
+      }),
+      catchError(this.handleError<T>(`get ${url}`))
+    );
+  }
+
+  post<T>(url: string, data: any): Observable<T> {
+    // Show spinner here
+
+    return this.http.post<T>(url, data, this.httpOptions).pipe(
+      tap(() => {
+        // Hide spinner here
+      }),
+      catchError(this.handleError<T>(`post ${url}`))
+    );
+  }
+
+  put<T>(url: string, data: any): Observable<T> {
+    // Show spinner here
+
+    return this.http.put<T>(url, data, this.httpOptions).pipe(
+      tap(() => {
+        // Hide spinner here
+      }),
+      catchError(this.handleError<T>(`put ${url}`))
+    );
+  }
+
+  delete<T>(url: string): Observable<T> {
+    // Show spinner here
+
+    return this.http.delete<T>(url, this.httpOptions).pipe(
+      tap(() => {
+        // Hide spinner here
+      }),
+      catchError(this.handleError<T>(`delete ${url}`))
+    );
+  }
+}
