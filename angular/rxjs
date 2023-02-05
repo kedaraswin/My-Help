@@ -1,0 +1,13 @@
+here are several common observable patterns that are used in Angular applications. Some of the most common ones include:
+
+Subject: A subject is a special type of observable that allows you to both emit values and subscribe to them. This makes it useful for sharing data between components or services. In Angular, you can use a subject to share data between components or services, or to implement event-driven communication.
+
+BehaviorSubject: A behavior subject is a type of subject that has an initial value and always emits the current value to new subscribers. This makes it useful for storing and sharing values that change over time, such as a user's authentication status.
+
+ReplaySubject: A replay subject is a type of subject that buffers and re-emits all previous values to new subscribers. This makes it useful for sharing values that are not available immediately, such as data loaded from an API.
+
+AsyncSubject: An async subject is a type of subject that only emits the final value to subscribers once the observable completes. This makes it useful for sharing values that are the result of an asynchronous operation, such as data loaded from an API.
+
+Operators: Operators are functions that can be used to manipulate and transform observables. Common operators include map, filter, merge, concat, switchMap, and debounceTime.
+
+In Angular, these patterns are commonly used to handle various aspects of an application's behavior, such as user inputs, API requests, and application state. By using these patterns, you can build a clean, organized, and scalable application architecture.
