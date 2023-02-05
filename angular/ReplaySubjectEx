@@ -1,0 +1,84 @@
+use case 
+Imagine you're building an e-commerce app where users can purchase items. You want to implement a feature that displays the user's latest order status on multiple pages of the app, such as the homepage and the order history page.
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OrderService {
+  private orderSubject = new ReplaySubject<any>(1);
+  
+  order$ = this.orderSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  placeOrder(order) {
+    this.http.post<any>('/api/order', order).pipe(
+      tap(result => this.orderSubject.next(result))
+    ).subscribe();
+  }
+
+  cancelOrder(orderId) {
+    this.http.delete<any>(`/api/order/${orderId}`).pipe(
+      tap(result => this.orderSubject.next(result))
+    ).subscribe();
+  }
+}
+
+// In HomePageComponent
+import { OrderService } from './order.service';
+
+@Component({
+  selector: 'app-home-page',
+  template: `
+    <p>Order Status: {{ orderStatus }}</p>
+    <button (click)="placeOrder()">Place Order</button>
+    <button (click)="cancelOrder()">Cancel Order</button>
+  `
+})
+export class HomePageComponent {
+  orderStatus: string;
+
+  constructor(private orderService: OrderService) {
+    this.orderService.order$.subscribe(order => {
+      this.orderStatus = order.status;
+    });
+  }
+
+  placeOrder() {
+    this.orderService.placeOrder({
+      items: [
+        { id: 1, quantity: 2 },
+        { id: 2, quantity: 1 }
+      ]
+    });
+  }
+
+  cancelOrder() {
+    this.orderService.cancelOrder(123);
+  }
+}
+
+// In OrderHistoryComponent
+import { OrderService } from './order.service';
+
+@Component({
+  selector: 'app-order-history',
+  template: `
+    <p>Order Status: {{ orderStatus }}</p>
+  `
+})
+export class OrderHistoryComponent {
+  orderStatus: string;
+
+  constructor(private orderService: OrderService) {
+    this.orderService.order$.subscribe(order => {
+      this.orderStatus = order.status;
+    });
+  }
+}
