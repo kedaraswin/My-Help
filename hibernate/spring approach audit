@@ -1,0 +1,36 @@
+@MappedSuperclass
+public abstract class BaseEntity {
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    // Getters and setters for createdAt, updatedAt, createdBy, and updatedBy
+}
+
+@Entity
+@EntityListeners(AuditListener.class)
+public class Employee extends BaseEntity {
+    // Employee attributes and relationships
+}
+
+public class AuditListener {
+    @PrePersist
+    public void setCreatedBy(BaseEntity baseEntity) {
+        // Set the createdBy field to the currently logged in user
+    }
+
+    @PreUpdate
+    public void setUpdatedBy(BaseEntity baseEntity) {
+        // Set the updatedBy field to the currently logged in user
+    }
+}
