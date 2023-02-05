@@ -1,0 +1,26 @@
+Operators in RxJS are functions that can be used to transform, filter, or aggregate data from an Observable stream. Here are some practical use cases for operators:
+
+Transformation Operators
+
+map - used to transform the data in an Observable stream, for example, converting a stream of strings to a stream of their lengths.
+pluck - used to extract a specific property from an object in a stream of objects.
+scan - used to aggregate data in an Observable stream, for example, finding the sum of all values in the stream.
+Filter Operators
+
+filter - used to filter data in an Observable stream, for example, only emitting values that meet a certain condition.
+take - used to limit the number of emissions from an Observable stream.
+skip - used to skip a certain number of emissions from an Observable stream.
+Combine Operators
+
+merge - used to combine two or more Observable streams into a single stream.
+concat - used to concatenate two or more Observable streams into a single stream, emitting values from the first stream before moving on to the next.
+zip - used to combine values from multiple Observable streams into a single stream, emitting an array of values whenever all streams have emitted a value.
+Error Handling Operators
+
+catchError - used to handle errors that occur in an Observable stream, for example, retrying the operation that caused the error.
+retry - used to automatically retry an operation that failed in an Observable stream.
+Utility Operators
+
+delay - used to delay the emission of values from an Observable stream.
+debounceTime - used to delay the emission of values from an Observable stream, only emitting the latest value after a specified period of time.
+distinctUntilChanged - used to only emit values that are distinct and different from the previous value in the stream.
