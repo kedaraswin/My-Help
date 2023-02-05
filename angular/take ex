@@ -1,0 +1,46 @@
+Let's say you have a stock trading website where users can place trades. When a user wants to place a trade, they have to confirm their trade by clicking a button within a certain time frame, otherwise the trade will be cancelled.
+
+
+import { Component, OnInit } from '@angular/core';
+import { timer } from 'rxjs';
+import { take, map } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div *ngIf="showConfirmation">
+      Confirm trade within {{ timeLeft }} seconds
+      <button (click)="confirmTrade()">Confirm</button>
+    </div>
+  `
+})
+export class AppComponent implements OnInit {
+  showConfirmation = false;
+  timeLeft = 0;
+
+  ngOnInit() {
+    this.showConfirmation = true;
+    timer(0, 1000)
+      .pipe(
+        take(10),
+        map(count => 10 - count),
+      )
+      .subscribe(timeLeft => {
+        this.timeLeft = timeLeft;
+        if (timeLeft === 0) {
+          this.showConfirmation = false;
+        }
+      });
+  }
+
+  confirmTrade() {
+    this.showConfirmation = false;
+    // place trade
+  }
+}
+
+
+------------------------------------------
+In this example, the timer operator is used to emit a value every second for 10 seconds. The take operator is then used to limit the number of values emitted to 10, which corresponds to the 10-second time frame for the user to confirm their trade. The map operator is used to calculate the remaining time in seconds.
+
+The values from the timer are subscribed to and displayed in the template, counting down from 10 to 0. If the user clicks the confirm button before the time runs out, the showConfirmation flag is set to false and the trade is placed. If the time runs out, the showConfirmation flag is automatically set to false, cancelling the trade.
