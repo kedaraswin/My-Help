@@ -1,0 +1,72 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { mergeMap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+  constructor(private http: HttpClient) {}
+
+  getProductDetails(productId: number) {
+    return this.http.get<Product>(`https://api.example.com/product/${productId}`);
+  }
+
+  getProductReviews(productId: number) {
+    return this.http.get<Review[]>(`https://api.example.com/reviews/${productId}`);
+  }
+}
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+}
+
+interface Review {
+  id: number;
+  productId: number;
+  content: string;
+}
+
+
+import { Component } from '@angular/core';
+import { mergeMap } from 'rxjs/operators';
+import { ProductService } from './product.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <h1>Product Details and Reviews</h1>
+    <p>Product Name: {{ productName }}</p>
+    <p>Product Description: {{ productDescription }}</p>
+    <h2>Product Reviews</h2>
+    <ul>
+      <li *ngFor="let review of productReviews">
+        {{ review }}
+      </li>
+    </ul>
+  `
+})
+export class AppComponent {
+  productName = '';
+  productDescription = '';
+  productReviews = [];
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.productService
+      .getProductDetails(1)
+      .pipe(
+        mergeMap(product => {
+          this.productName = product.name;
+          this.productDescription = product.description;
+          return this.productService.getProductReviews(product.id);
+        })
+      )
+      .subscribe(reviews => {
+        this.productReviews = reviews;
+      });
+  }
+}
