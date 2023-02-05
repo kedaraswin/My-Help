@@ -1,0 +1,40 @@
+import org.hibernate.envers.RevisionListener;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+public class CustomAuditListener implements RevisionListener {
+
+  @Override
+  public void newRevision(Object revisionEntity) {
+    CustomRevisionEntity customRevisionEntity = (CustomRevisionEntity) revisionEntity;
+    customRevisionEntity.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+  }
+}
+
+
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.RevisionEntity;
+
+@Entity
+@RevisionEntity(CustomAuditListener.class)
+public class CustomRevisionEntity extends DefaultRevisionEntity {
+
+  @Id
+  @GeneratedValue
+  private long id;
+
+  private String username;
+
+  // getters and setters
+}
+
+
+
+hibernate.listeners.envers.autoRegister=false
+hibernate.listeners.envers.revision_listener=com.example.CustomAuditListener
+hibernate.envers.default_schema=audit
+hibernate.envers.revision_entity_name=com.example.CustomRevisionEntity
